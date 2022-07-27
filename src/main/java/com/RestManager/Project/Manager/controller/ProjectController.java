@@ -37,7 +37,7 @@ public class ProjectController {
     @PutMapping("{id}")
     public Project update(@PathVariable("id") Project projectFromDb, @RequestBody Project project){
         BeanUtils.copyProperties(project, projectFromDb,"id");
-        return projectRepo.save(project);
+        return projectRepo.save(projectFromDb);
     }
 
     @DeleteMapping("{id}")
