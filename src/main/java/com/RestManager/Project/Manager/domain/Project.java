@@ -1,9 +1,12 @@
 package com.RestManager.Project.Manager.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -13,11 +16,27 @@ public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
+    @JsonView(Views.Id.class)
     private Long id;
+
+    @JsonView(Views.IdName.class)
     private String text;
+
+    @Column(updatable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonView(Views.FullProject.class)
+    private LocalDateTime creationDate;
 
     public String getText() {
         return text;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
     }
 
     public void setText(String text) {
@@ -31,7 +50,7 @@ public class Project {
     public void setId(Long id) {
         this.id = id;
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

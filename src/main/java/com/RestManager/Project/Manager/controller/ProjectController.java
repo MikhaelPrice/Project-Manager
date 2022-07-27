@@ -1,11 +1,14 @@
 package com.RestManager.Project.Manager.controller;
 
 import com.RestManager.Project.Manager.domain.Project;
+import com.RestManager.Project.Manager.domain.Views;
 import com.RestManager.Project.Manager.repo.ProjectRepo;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -20,17 +23,20 @@ public class ProjectController {
     }
 
     @GetMapping
+    @JsonView(Views.IdName.class)
     public List<Project> list(){
         return projectRepo.findAll();
     }
 
     @GetMapping("{id}")
+    @JsonView(Views.FullProject.class)
     public Project getOne(@PathVariable("id") Project project){
         return project;
     }
 
     @PostMapping
     public Project create(@RequestBody Project project){
+        project.setCreationDate(LocalDateTime.now());
         return projectRepo.save(project);
     }
 
