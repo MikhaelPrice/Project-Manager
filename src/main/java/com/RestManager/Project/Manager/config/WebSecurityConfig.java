@@ -25,8 +25,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable();
     }
+
     @Bean
-    public PrincipalExtractor principalExtractor(UserDetailsRepo userDetailsRepo){
+    public PrincipalExtractor principalExtractor(UserDetailsRepo userDetailsRepo) {
         return map -> {
             String id = (String) map.get("sub");
             User user = userDetailsRepo.findById(id).orElseGet(() -> {
