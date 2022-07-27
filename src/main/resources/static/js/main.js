@@ -103,11 +103,9 @@ var app = new Vue({
   '<div>' +
       '<div v-if="!profile">Необходимо пройти авторизацию через <a href="/login">Google</a></div>' +
       '<div v-else>' +
-          '<div>'+
-               '{{profile.name}}&nbsp;<a href="/logout">Выйти</a>' +
-          '</div>' +
-      '<projects-list :projects="projects" />' +
-       '</div>'
+          '<div>{{profile.name}}&nbsp;<a href="/logout">Выйти</a></div>' +
+          '<projects-list :projects="projects" />' +
+       '</div>'+
   '</div>',
   data: {
     projects: frontendData.projects,
