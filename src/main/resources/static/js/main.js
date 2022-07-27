@@ -90,13 +90,6 @@ Vue.component('projects-list', {
        '<project-row v-for="project in projects" :key="project.id" :project="project" ' +
         ':editMethod="editMethod" :projects="projects" />' +
    '</div>',
-   created: function() {
-       projectApi.get().then(result =>
-        result.json().then(data =>
-            data.forEach(project => this.projects.push(project))
-        )
-    )
-   },
    methods: {
         editMethod: function(project) {
             this.project = project;
@@ -106,8 +99,21 @@ Vue.component('projects-list', {
 
 var app = new Vue({
   el: '#app',
-  template: '<projects-list :projects="projects" />',
+  template:
+  '<div>' +
+
+  '<div v-if="!profile">Необходимо пройти авторизацию через <a href="/login">Google</a></div>' +
+  '<projects-list v-else:projects="projects" />' +
+  '</div>',
   data: {
-    projects: []
-  }
+    projects: frontendData.projects,
+    profile: frontendData.profile
+  },
+  created: function() {
+         /*projectApi.get().then(result =>
+          result.json().then(data =>
+              data.forEach(project => this.projects.push(project))
+          )
+      )*/
+     },
 });
