@@ -16,6 +16,8 @@ import java.util.HashMap;
 @RequestMapping("/")
 public class MainController {
 
+    private final ProjectRepo projectRepo;
+
     @Value("${spring.profiles.active}")
     private String profile;
 
@@ -24,18 +26,13 @@ public class MainController {
         this.projectRepo = projectRepo;
     }
 
-    private final ProjectRepo projectRepo;
-
     @GetMapping
-    public String main(Model model, @AuthenticationPrincipal User user){
+    public String main(Model model, @AuthenticationPrincipal User user) {
         HashMap<Object, Object> data = new HashMap<>();
-
         data.put("profile", user);
         data.put("projects", projectRepo.findAll());
-
         model.addAttribute("frontendData", data);
-        model.addAttribute("isDevMode","dev".equals(profile));
-
+        model.addAttribute("isDevMode", "dev".equals(profile));
         return "index";
     }
 
