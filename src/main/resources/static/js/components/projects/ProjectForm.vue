@@ -1,19 +1,19 @@
 <template>
-    <div>
-        <input type="text" placeholder="Enter a project" v-model="text" />
-        <input type="button" value="Save" @click="save" />
-    </div>
+    <v-layout row>
+        <v-text-field
+                label="New project"
+                placeholder="Add a project"
+                v-model="text">
+        </v-text-field>
+        <v-btn @click="save">
+            Save
+        </v-btn>
+    </v-layout>
 </template>
 
 <script>
-    function getIndex(list, id) {
-        for (var i = 0; i < list.length; i++ ) {
-            if (list[i].id === id) {
-                return i
-            }
-        }
-        return -1
-    }
+    import { sendProject } from 'util/ws'
+
     export default {
         props: ['projects', 'projectAttr'],
         data() {
@@ -30,7 +30,10 @@
         },
         methods: {
             save() {
-                const project = { text: this.text }
+                sendProject({id: this.id, text: this.text})
+                this.text = ''
+                this.id = ''
+                /*const project = { text: this.text }
                 if (this.id) {
                     this.$resource('/project{/id}').update({id: this.id}, project).then(result =>
                         result.json().then(data => {
@@ -47,7 +50,7 @@
                             this.text = ''
                         })
                     )
-                }
+                }*/
             }
         }
     }

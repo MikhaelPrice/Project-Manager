@@ -8,7 +8,7 @@ module.exports = {
   devServer: {
     contentBase: './dist',
     compress: true,
-    port: 8000,
+    port: 8500,
     allowedHosts: [
       'localhost:8080'
     ]
@@ -28,7 +28,23 @@ module.exports = {
       {
         test: /\.vue$/,
         loader: 'vue-loader'
-      }
+      },
+       {
+         test: /\.css$/,
+         use: [
+             'vue-style-loader',
+             'css-loader'
+         ]
+       },
+       {
+       test: /\.styl$/,
+       loader: ['style-loader', 'css-loader', 'stylus-loader', {
+       loader: 'vuetify-loader',
+       options: {
+       theme: path.resolve('./node_modules/vuetify/src/stylus/theme.styl')
+       }
+       }]
+       }
     ]
   },
   plugins: [

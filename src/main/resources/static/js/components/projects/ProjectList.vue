@@ -1,13 +1,13 @@
 <template>
-    <div style="position: relative; width: 300px;">
-        <project-form :projects="projects" :projectAttr="project" />
-        <project-row v-for="project in projects"
+        <v-layout align-space-around justify-start column>
+        <project-form :projects="projects" :projectAttr="project"></project-form>
+        <project-row v-for="project in sortedProjects"
                      :key="project.id"
                      :project="project"
                      :editProject="editProject"
                      :deleteProject="deleteProject"
-                     :projects="projects" />
-    </div>
+                     :projects="projects"></project-row>
+    </v-layout>
 </template>
 
 <script>
@@ -22,6 +22,11 @@
         data() {
             return {
                 project: null
+            }
+        },
+        computed: {
+            sortedProjects() {
+                return this.projects.sort((a, b) => -(a.id - b.id))
             }
         },
         methods: {
