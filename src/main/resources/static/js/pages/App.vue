@@ -23,7 +23,6 @@
 <script>
     import ProjectsList from 'components/projects/ProjectList.vue'
     import { addHandler } from 'util/ws'
-    import { getIndex } from 'util/collections'
 
     export default {
         components: {
@@ -37,11 +36,25 @@
         },
         created() {
             addHandler(data => {
-                let index = getIndex(this.projects, data.id)
-                if(index > -1) {
-                    this.projects.splice(index,1,data)
-                }else{
-                    this.projects.push(data)
+                if (data.objectType === 'PROJECT') {
+                    const index = this.projects.findIndex(item => item.id === data.body.id)
+                    switch (data.eventType) {
+                        case 'CREATE':
+                        case 'UPDATE':
+                            if (index > -1) {
+                                this.projects.splice(index, 1, data.body)
+                            } else {
+                                this.projects.push(data.body)
+                            }
+                            break
+                        case 'REMOVE':
+                            this.projects.splice(index, 1)
+                            break
+                        default:
+                            console.error(`Looks like the event type if unknown "${data.eventType}"`)
+                    }
+                } else {
+                    console.error(`Looks like the object type if unknown "${data.objectType}"`)
                 }
             })
         }

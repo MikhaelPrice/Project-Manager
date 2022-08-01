@@ -12,7 +12,7 @@
 </template>
 
 <script>
-    import { sendProject } from 'util/ws'
+    import projectsApi from 'api/projects'
 
     export default {
         props: ['projects', 'projectAttr'],
@@ -30,27 +30,32 @@
         },
         methods: {
             save() {
-                sendProject({id: this.id, text: this.text})
-                this.text = ''
-                this.id = ''
-                /*const project = { text: this.text }
+                const project = {
+                id: this.id,
+                text: this.text
+                }
                 if (this.id) {
-                    this.$resource('/project{/id}').update({id: this.id}, project).then(result =>
+                   projectsApi.update(project).then(result =>
                         result.json().then(data => {
-                            const index = getIndex(this.projects, data.id)
+                            const index = this.projects.findIndex(item => item.id === data.id)
                             this.projects.splice(index, 1, data)
-                            this.text = ''
-                            this.id = ''
                         })
                     )
                 } else {
-                    this.$resource('/project{/id}').save({}, project).then(result =>
+                    projectsApi.add(project).then(result =>
                         result.json().then(data => {
-                            this.projects.push(data)
-                            this.text = ''
+                            const index = this.projects.findIndex(item => item.id === data.id)
+
+                            if (index > -1) {
+                                this.projects.splice(index, 1,data)
+                            } else {
+                                this.projects.push(data)
+                            }
                         })
                     )
-                }*/
+                }
+                this.text = ''
+                this.id = ''
             }
         }
     }

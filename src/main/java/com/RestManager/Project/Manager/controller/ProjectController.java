@@ -2,26 +2,30 @@ package com.RestManager.Project.Manager.controller;
 
 import com.RestManager.Project.Manager.domain.Project;
 import com.RestManager.Project.Manager.domain.Views;
+import com.RestManager.Project.Manager.dto.EventType;
+import com.RestManager.Project.Manager.dto.ObjectType;
 import com.RestManager.Project.Manager.repo.ProjectRepo;
+import com.RestManager.Project.Manager.util.WsSender;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 @RestController
 @RequestMapping("project")
 public class ProjectController {
 
     private final ProjectRepo projectRepo;
+    private final BiConsumer<EventType, Project> wsSender;
 
     @Autowired
-    public ProjectController(ProjectRepo projectRepo) {
+    public ProjectController(ProjectRepo projectRepo, WsSender wsSender) {
         this.projectRepo = projectRepo;
+        this.wsSender = wsSender.getSender(ObjectType.PROJECT, Views.IdName.class);
     }
 
     @GetMapping
@@ -39,23 +43,23 @@ public class ProjectController {
     @PostMapping
     public Project create(@RequestBody Project project) {
         project.setCreationDate(LocalDateTime.now());
-        return projectRepo.save(project);
+        Project updatedProject = projectRepo.save(project);
+        wsSender.accept(EventType.CREATE, updatedProject);
+        return updatedProject;
     }
 
     @PutMapping("{id}")
     public Project update(@PathVariable("id") Project projectFromDb, @RequestBody Project project) {
         BeanUtils.copyProperties(project, projectFromDb, "id");
-        return projectRepo.save(projectFromDb);
+        Project updatedProject = projectRepo.save(projectFromDb);
+        wsSender.accept(EventType.UPDATE, updatedProject);
+        return updatedProject;
     }
 
     @DeleteMapping("{id}")
     public void delete(@PathVariable("id") Project project) {
         projectRepo.delete(project);
+        wsSender.accept(EventType.REMOVE, project);
     }
 
-    @MessageMapping("/changeProject")
-    @SendTo("/topic/activity")
-    public Project change(Project project) {
-        return projectRepo.save(project);
-    }
 }

@@ -13,6 +13,8 @@
 <script>
     import ProjectRow from 'components/projects/ProjectRow.vue'
     import ProjectForm from 'components/projects/ProjectForm.vue'
+    import projectsApi from 'api/projects'
+
     export default {
         props: ['projects'],
         components: {
@@ -34,7 +36,7 @@
                 this.project = project
             },
             deleteProject(project) {
-                this.$resource('/project{/id}').remove({id: project.id}).then(result => {
+                projectsApi.remove(project.id).then(result => {
                     if (result.ok) {
                         this.projects.splice(this.projects.indexOf(project), 1)
                     }
