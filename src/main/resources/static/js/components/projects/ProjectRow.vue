@@ -10,13 +10,19 @@
                 <v-icon>delete</v-icon>
             </v-btn>
         </v-card-actions>
+        <record-list
+            :records="project.records"
+            :project-id="project.id">
+        </record-list>
     </v-card>
 </template>
 
 <script>
     import { mapActions } from 'vuex'
+    import RecordList from '../record/RecordList.vue'
     export default {
         props: ['project', 'editProject'],
+        components: { RecordList },
         methods: {
             ...mapActions(['removeProjectAction']),
             edit() {

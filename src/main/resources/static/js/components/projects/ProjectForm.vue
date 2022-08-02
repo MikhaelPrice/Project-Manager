@@ -3,7 +3,8 @@
         <v-text-field
                 label="New project"
                 placeholder="Add a project"
-                v-model="text">
+                v-model="text"
+                @keyup.enter="save">
         </v-text-field>
         <v-btn @click="save">
             Save

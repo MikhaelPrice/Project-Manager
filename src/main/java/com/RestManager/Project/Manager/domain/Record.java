@@ -1,44 +1,48 @@
 package com.RestManager.Project.Manager.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
-import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table
-@ToString(of = {"id", "text"})
 @Data
-public class Project {
+public class Record {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonView(Views.Id.class)
+    @GeneratedValue
+    @JsonView(Views.IdName.class)
     private Long id;
 
     @JsonView(Views.IdName.class)
     private String text;
 
-    @Column(updatable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonView(Views.FullProject.class)
-    private LocalDateTime creationDate;
-
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false, updatable = false)
     @JsonView(Views.FullProject.class)
     private User author;
 
-    @OneToMany(mappedBy = "project", orphanRemoval = true)
-    @JsonView(Views.FullProject.class)
-    private List<Record> records;
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
 
-    public Project() {
+    @ManyToOne
+    @JoinColumn(name = "projects_id")
+    private Project projects;
+
+    public Project getProjects() {
+        return projects;
+    }
+
+    public void setProjects(Project projects) {
+        this.projects = projects;
+    }
+
+    public Project getProject() {
+        return project;
     }
 
     public Long getId() {
@@ -57,14 +61,6 @@ public class Project {
         this.text = text;
     }
 
-    public LocalDateTime getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
-    }
-
     public User getAuthor() {
         return author;
     }
@@ -73,20 +69,16 @@ public class Project {
         this.author = author;
     }
 
-    public List<Record> getRecords() {
-        return records;
-    }
-
-    public void setRecords(List<Record> records) {
-        this.records = records;
+    public void setProject(Project project) {
+        this.project = project;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Project project = (Project) o;
-        return id != null && Objects.equals(id, project.id);
+        Record that = (Record) o;
+        return id != null && Objects.equals(id, that.id);
     }
 
     @Override
@@ -94,4 +86,3 @@ public class Project {
         return getClass().hashCode();
     }
 }
-

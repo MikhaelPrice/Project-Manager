@@ -1,12 +1,13 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import projectsApi from 'api/projects'
+import recordApi from 'api/record'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        projects: frontendData.projects,
+        projects,
         profile: frontendData.profile
     },
     getters: {
@@ -38,6 +39,23 @@ export default new Vuex.Store({
                 ]
             }
         },
+        addRecordMutation(state, record) {
+            const updateIndex = state.projects.findIndex(item => item.id === record.project.id)
+            const project = state.projects[updateIndex]
+
+            state.projects = [
+                ...state.projects.slice(0, updateIndex),
+                {
+                    ...project,
+                    records: [
+                        ...project.records,
+                        record
+                    ]
+                },
+                ...state.projects.slice(updateIndex + 1)
+            ]
+        },
+
     },
     actions: {
         async addProjectAction({commit, state}, project) {
@@ -63,5 +81,10 @@ export default new Vuex.Store({
                 commit('removeProjectMutation', project)
             }
         },
+        async addRecordAction({commit, state}, record) {
+            const response = await recordApi.add(record)
+            const data = await response.json()
+            commit('addRecordMutation', record)
+        }
     }
 })

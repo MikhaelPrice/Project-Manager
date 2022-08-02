@@ -1,6 +1,7 @@
 package com.RestManager.Project.Manager.controller;
 
 import com.RestManager.Project.Manager.domain.Project;
+import com.RestManager.Project.Manager.domain.User;
 import com.RestManager.Project.Manager.domain.Views;
 import com.RestManager.Project.Manager.dto.EventType;
 import com.RestManager.Project.Manager.dto.ObjectType;
@@ -9,8 +10,10 @@ import com.RestManager.Project.Manager.util.WsSender;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -41,8 +44,11 @@ public class ProjectController {
     }
 
     @PostMapping
-    public Project create(@RequestBody Project project) {
+    public Project create(@RequestBody Project project,
+                          @AuthenticationPrincipal User user) throws IOException {
+
         project.setCreationDate(LocalDateTime.now());
+        project.setAuthor(user);
         Project updatedProject = projectRepo.save(project);
         wsSender.accept(EventType.CREATE, updatedProject);
         return updatedProject;

@@ -1,6 +1,7 @@
 package com.RestManager.Project.Manager.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -62,9 +63,12 @@ public class User implements Serializable {
     }
 
     @Id
+    @JsonView(Views.IdName.class)
     private String id;
+    @JsonView(Views.IdName.class)
     private String name;
     private String email;
+    @JsonView(Views.IdName.class)
     private String userpic;
     private String locale;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")

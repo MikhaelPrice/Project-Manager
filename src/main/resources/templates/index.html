@@ -8,6 +8,7 @@
     <title>Projects</title>
     <script th:inline="javascript">
         var frontendData = [[${frontendData}]];
+        var projects = [# th:utext="${projects}" /];
     </script>
 </head>
 <body>
