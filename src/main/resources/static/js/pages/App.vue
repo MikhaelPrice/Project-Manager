@@ -14,13 +14,14 @@
                 <a href="/login">Google</a>
             </v-container>
             <v-container v-if="profile">
-                <projects-list :projects="projects"></projects-list>
+                <projects-list></projects-list>
             </v-container>
         </v-content>
     </v-app>
 </template>
 
 <script>
+    import { mapState, mapMutations } from 'vuex'
     import ProjectsList from 'components/projects/ProjectList.vue'
     import { addHandler } from 'util/ws'
 
@@ -28,27 +29,20 @@
         components: {
             ProjectsList
         },
-        data() {
-            return {
-                projects: frontendData.projects,
-                profile: frontendData.profile
-            }
-        },
+        computed: mapState(['profile']),
+        methods: mapMutations(['addProjectMutation', 'updateProjectMutation', 'removeProjectMutation']),
         created() {
             addHandler(data => {
                 if (data.objectType === 'PROJECT') {
-                    const index = this.projects.findIndex(item => item.id === data.body.id)
                     switch (data.eventType) {
                         case 'CREATE':
+                            this.addProjectMutation(data.body)
+                            break
                         case 'UPDATE':
-                            if (index > -1) {
-                                this.projects.splice(index, 1, data.body)
-                            } else {
-                                this.projects.push(data.body)
-                            }
+                            this.updateProjectMutation(data.body)
                             break
                         case 'REMOVE':
-                            this.projects.splice(index, 1)
+                            this.removeProjectMutation(data.body)
                             break
                         default:
                             console.error(`Looks like the event type if unknown "${data.eventType}"`)

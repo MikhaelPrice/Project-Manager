@@ -14,14 +14,16 @@
 </template>
 
 <script>
+    import { mapActions } from 'vuex'
     export default {
-        props: ['project', 'editProject', 'deleteProject', 'projects'],
+        props: ['project', 'editProject'],
         methods: {
+            ...mapActions(['removeProjectAction']),
             edit() {
                 this.editProject(this.project)
             },
             del() {
-                this.deleteProject(this.project)
+                this.removeProjectAction(this.project)
             }
         }
     }

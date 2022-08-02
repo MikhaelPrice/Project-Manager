@@ -1,46 +1,34 @@
 <template>
         <v-layout align-space-around justify-start column>
-        <project-form :projects="projects" :projectAttr="project"></project-form>
+        <project-form :projectAttr="project"></project-form>
         <project-row v-for="project in sortedProjects"
                      :key="project.id"
                      :project="project"
                      :editProject="editProject"
-                     :deleteProject="deleteProject"
-                     :projects="projects"></project-row>
+                      ></project-row>
+
     </v-layout>
 </template>
 
 <script>
+    import { mapGetters} from 'vuex'
     import ProjectRow from 'components/projects/ProjectRow.vue'
     import ProjectForm from 'components/projects/ProjectForm.vue'
-    import projectsApi from 'api/projects'
 
     export default {
-        props: ['projects'],
         components: {
             ProjectRow,
             ProjectForm
         },
         data() {
             return {
-                project: null
+               project: null
             }
         },
-        computed: {
-            sortedProjects() {
-                return this.projects.sort((a, b) => -(a.id - b.id))
-            }
-        },
+        computed: mapGetters(['sortedProjects']),
         methods: {
             editProject(project) {
                 this.project = project
-            },
-            deleteProject(project) {
-                projectsApi.remove(project.id).then(result => {
-                    if (result.ok) {
-                        this.projects.splice(this.projects.indexOf(project), 1)
-                    }
-                })
             }
         }
     }

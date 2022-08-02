@@ -12,10 +12,10 @@
 </template>
 
 <script>
-    import projectsApi from 'api/projects'
+    import { mapActions } from 'vuex'
 
     export default {
-        props: ['projects', 'projectAttr'],
+        props: ['projectAttr'],
         data() {
             return {
                 text: '',
@@ -29,30 +29,16 @@
             }
         },
         methods: {
+            ...mapActions(['addProjectAction', 'updateProjectAction']),
             save() {
                 const project = {
-                id: this.id,
-                text: this.text
+                    id: this.id,
+                    text: this.text
                 }
                 if (this.id) {
-                   projectsApi.update(project).then(result =>
-                        result.json().then(data => {
-                            const index = this.projects.findIndex(item => item.id === data.id)
-                            this.projects.splice(index, 1, data)
-                        })
-                    )
+                   this.updateProjectAction(project)
                 } else {
-                    projectsApi.add(project).then(result =>
-                        result.json().then(data => {
-                            const index = this.projects.findIndex(item => item.id === data.id)
-
-                            if (index > -1) {
-                                this.projects.splice(index, 1,data)
-                            } else {
-                                this.projects.push(data)
-                            }
-                        })
-                    )
+                    this.addProjectAction(project)
                 }
                 this.text = ''
                 this.id = ''
