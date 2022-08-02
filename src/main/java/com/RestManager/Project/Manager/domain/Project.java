@@ -7,6 +7,7 @@ import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -26,6 +27,9 @@ public class Project {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonView(Views.FullProject.class)
     private LocalDateTime creationDate;
+
+    public Project() {
+    }
 
     public String getText() {
         return text;

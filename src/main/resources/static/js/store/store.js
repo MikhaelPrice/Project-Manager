@@ -10,7 +10,7 @@ export default new Vuex.Store({
         profile: frontendData.profile
     },
     getters: {
-        sortedProjects: state => state.projects.sort((a, b) => -(a.id - b.id))
+        sortedProjects: state => (state.projects || []).sort((a, b) => -(a.id - b.id))
     },
     mutations: {
         addProjectMutation(state, project) {

@@ -1,36 +1,44 @@
 <template>
     <v-app>
         <v-toolbar app>
-            <v-toolbar-title>Projects</v-toolbar-title>
+            <v-toolbar-title>Sarafan</v-toolbar-title>
+            <v-btn flat
+                   v-if="profile"
+                   :disabled="$route.path === '/'"
+                   @click="showProjects">
+                Projects
+            </v-btn>
             <v-spacer></v-spacer>
-            <span v-if="profile">{{profile.name}}</span>
+            <v-btn flat
+                   v-if="profile"
+                   :disabled="$route.path === '/profile'"
+                   @click="showProfile">
+                {{profile.name}}
+            </v-btn>
             <v-btn v-if="profile" icon href="/logout">
                 <v-icon>exit_to_app</v-icon>
             </v-btn>
         </v-toolbar>
         <v-content>
-            <v-container v-if="!profile">
-                Необходимо авторизоваться через
-                <a href="/login">Google</a>
-            </v-container>
-            <v-container v-if="profile">
-                <projects-list></projects-list>
-            </v-container>
+            <router-view></router-view>
         </v-content>
     </v-app>
 </template>
 
 <script>
     import { mapState, mapMutations } from 'vuex'
-    import ProjectsList from 'components/projects/ProjectList.vue'
     import { addHandler } from 'util/ws'
-
     export default {
-        components: {
-            ProjectsList
-        },
         computed: mapState(['profile']),
-        methods: mapMutations(['addProjectMutation', 'updateProjectMutation', 'removeProjectMutation']),
+        methods: {
+            ...mapMutations(['addProjectMutation', 'updateProjectMutation', 'removeProjectMutation']),
+            showProjects() {
+                this.$router.push('/')
+            },
+            showProfile() {
+                this.$router.push('/profile')
+            }
+        },
         created() {
             addHandler(data => {
                 if (data.objectType === 'PROJECT') {
@@ -51,10 +59,14 @@
                     console.error(`Looks like the object type if unknown "${data.objectType}"`)
                 }
             })
+        },
+        beforeMount() {
+            if (!this.profile) {
+                this.$router.replace('/auth')
+            }
         }
     }
 </script>
 
 <style>
-
 </style>

@@ -1,4 +1,5 @@
 <template>
+    <v-container>
         <v-layout align-space-around justify-start column>
         <project-form :projectAttr="project"></project-form>
         <project-row v-for="project in sortedProjects"
@@ -6,8 +7,8 @@
                      :project="project"
                      :editProject="editProject"
                       ></project-row>
-
-    </v-layout>
+        </v-layout>
+    </v-container>
 </template>
 
 <script>
