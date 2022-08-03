@@ -28,7 +28,6 @@
 <script>
     import { mapState, mapMutations } from 'vuex'
     import { addHandler } from 'util/ws'
-
     export default {
         computed: mapState(['profile']),
         methods: {

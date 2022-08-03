@@ -11,8 +11,8 @@
             </v-btn>
         </v-card-actions>
         <record-list
-            :records="project.records"
-            :project-id="project.id">
+                :records="project.records"
+                :project-id="project.id">
         </record-list>
     </v-card>
 </template>

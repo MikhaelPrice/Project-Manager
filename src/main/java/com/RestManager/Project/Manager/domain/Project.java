@@ -94,4 +94,3 @@ public class Project {
         return getClass().hashCode();
     }
 }
-
